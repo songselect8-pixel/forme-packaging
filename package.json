@@ -1,0 +1,6 @@
+{
+  "name": "forme-packaging",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build.mjs", "test": "node --test", "start": "node serve.mjs" }
+}

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://forme-packaging-studio.ready-vole-4943.chatgpt.site/sitemap.xml
