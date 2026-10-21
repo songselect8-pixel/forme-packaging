@@ -6,9 +6,9 @@ const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=
 const server=http.createServer(async(req,res)=>{
   try{
     const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
-    const file=path.resolve(root,'.'+(pathname==='/'?'/index.html':pathname));
+    let file=path.resolve(root,'.'+(pathname==='/'?'/index.html':pathname));
     if(!file.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}
-    const info=await stat(file);if(!info.isFile())throw new Error('Not a file');
+    let info=await stat(file);if(info.isDirectory()){file=path.join(file,'index.html');info=await stat(file);}if(!info.isFile())throw new Error('Not a file');
     const bytes=await readFile(file);const headers={'Content-Type':types[path.extname(file)]||'application/octet-stream','Accept-Ranges':'bytes'};
     const match=/^bytes=(\d+)-(\d*)$/.exec(req.headers.range||'');
     if(match){const start=Number(match[1]),end=match[2]?Math.min(Number(match[2]),bytes.length-1):bytes.length-1;if(start>end||start>=bytes.length){res.writeHead(416,{'Content-Range':`bytes */${bytes.length}`});res.end();return;}res.writeHead(206,{...headers,'Content-Range':`bytes ${start}-${end}/${bytes.length}`,'Content-Length':end-start+1});res.end(bytes.subarray(start,end+1));}

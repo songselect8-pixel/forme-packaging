@@ -1,46 +1,39 @@
-import { site, products, filterProducts, createBrief } from './site-config.js';
+import {site,products,filterProducts,createBrief,estimateQuote} from './site-config.js';
+const nav=document.querySelector('.site-nav'),toggle=document.querySelector('.nav-toggle'),menu=document.querySelector('#navLinks');
+function closeMenu(){menu.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation');}
+toggle.addEventListener('click',()=>{const open=!menu.classList.contains('open');menu.classList.toggle('open',open);toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');});
+document.addEventListener('click',e=>{if(!e.target.closest('.site-nav'))closeMenu();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+menu.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu();});
+const backTop=document.querySelector('.back-top');
+function onScroll(){nav.classList.toggle('scrolled',scrollY>30);backTop.classList.toggle('visible',scrollY>700);}
+addEventListener('scroll',onScroll,{passive:true});onScroll();backTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'}));
 
-const menu = document.querySelector('.menu-toggle');
-const navigation = document.querySelector('#navigation');
-function closeMenu(){ menu?.setAttribute('aria-expanded','false'); menu?.setAttribute('aria-label','Open navigation'); navigation?.classList.remove('is-open'); }
-menu?.addEventListener('click',()=>{ const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded',String(open)); menu.setAttribute('aria-label',open?'Close navigation':'Open navigation'); navigation.classList.toggle('is-open',open); });
-document.addEventListener('keydown',event=>{if(event.key==='Escape') closeMenu();});
-document.addEventListener('click',event=>{if(!event.target.closest('.header')) closeMenu();});
-navigation?.addEventListener('click',event=>{if(event.target.closest('a')) closeMenu();});
+document.querySelectorAll('.faq-q').forEach(button=>button.addEventListener('click',()=>{const item=button.closest('.faq-item');const open=item.classList.toggle('open');button.setAttribute('aria-expanded',String(open));}));
+const heroVideo=document.querySelector('#hero video');
+const heroPause=document.querySelector('.hero-pause');
+if(heroVideo){if(matchMedia('(prefers-reduced-motion:reduce)').matches){heroVideo.pause();heroPause.textContent='Play video';}heroPause.addEventListener('click',()=>{if(heroVideo.paused){heroVideo.play().catch(()=>{});heroPause.textContent='Pause video';heroPause.setAttribute('aria-label','Pause background video');}else{heroVideo.pause();heroPause.textContent='Play video';heroPause.setAttribute('aria-label','Play background video');}});}
 
-document.querySelectorAll('dialog').forEach(dialog=>{
-  dialog.querySelector('[data-close-dialog]')?.addEventListener('click',()=>dialog.close());
-  dialog.addEventListener('click',event=>{const r=dialog.getBoundingClientRect();if(event.target===dialog && (event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom))dialog.close();});
-});
-document.querySelectorAll('[data-policy]').forEach(button=>button.addEventListener('click',()=>document.querySelector('#policy-dialog').showModal()));
-const filmDialog = document.querySelector('#film-dialog');
-const video = filmDialog.querySelector('video');
-document.querySelectorAll('[data-film]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();filmDialog.showModal();video.play().catch(()=>{});}));
-filmDialog.addEventListener('close',()=>video.pause());
+document.querySelectorAll('dialog').forEach(dialog=>{dialog.querySelector('.dialog-close')?.addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{const r=dialog.getBoundingClientRect();if(e.target===dialog&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom))dialog.close();});});
+document.querySelectorAll('.zoomable').forEach(img=>{img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','Enlarge '+img.alt);const zoom=()=>{const target=document.querySelector('#zoom-image');target.src=img.currentSrc;target.alt=img.alt;document.querySelector('#zoom-caption').textContent=img.alt;document.querySelector('#image-dialog').showModal();};img.addEventListener('click',zoom);img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();zoom();}});});
 
-const filterButtons=[...document.querySelectorAll('[data-filter]')];
-function filter(category){
-  if(!filterButtons.some(b=>b.dataset.filter===category)) category='all';
-  const matches=new Set(filterProducts(category).map(p=>p.id));
-  document.querySelectorAll('.catalog-grid .product-card').forEach((card,index)=>{card.hidden=!matches.has(products[index].id);});
-  filterButtons.forEach(b=>{const active=b.dataset.filter===category;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
-  const count=document.querySelector('#result-count');if(count)count.textContent=`${matches.size} collection${matches.size===1?'':'s'}`;
-}
-filterButtons.forEach(button=>button.addEventListener('click',()=>{filter(button.dataset.filter);const url=new URL(location.href);if(button.dataset.filter==='all')url.searchParams.delete('category');else url.searchParams.set('category',button.dataset.filter);history.replaceState(null,'',url);}));
-if(filterButtons.length)filter(new URLSearchParams(location.search).get('category')||'all');
+const filters=[...document.querySelectorAll('[data-filter]')];
+function filter(category){if(!filters.some(b=>b.dataset.filter===category))category='all';const ids=new Set(filterProducts(category).map(p=>p.id));document.querySelectorAll('.catalog-section [data-product-card]').forEach((card,i)=>card.hidden=!ids.has(products[i].id));filters.forEach(b=>{const active=b.dataset.filter===category;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});const count=document.querySelector('.catalog-count');if(count)count.textContent=`${ids.size} product${ids.size===1?'':'s'}`;}
+if(filters.length){filter(new URLSearchParams(location.search).get('category')||'all');filters.forEach(b=>b.addEventListener('click',()=>{filter(b.dataset.filter);const u=new URL(location.href);if(b.dataset.filter==='all')u.searchParams.delete('category');else u.searchParams.set('category',b.dataset.filter);history.replaceState(null,'',u);}));}
 
-const form=document.querySelector('#inquiry-form');
-if(form){
-  const status=document.querySelector('#form-status');
-  const draftKey='forme-packaging-inquiry';
-  const names=['name','email','company','product','quantity','message'];
-  let brief='';
-  try{const saved=JSON.parse(localStorage.getItem(draftKey)||'null');if(saved && typeof saved==='object'){for(const name of names)if(typeof saved[name]==='string')form.elements[name].value=saved[name];status.textContent='Your saved draft has been restored on this device.';}}catch{/* Private browsing or a damaged draft must not prevent an inquiry. */}
-  const requested=products.find(p=>p.id===new URLSearchParams(location.search).get('product'));
-  if(requested)form.elements.product.value=requested.name;
-  document.querySelector('#save-draft').addEventListener('click',()=>{try{const data=Object.fromEntries(names.map(name=>[name,form.elements[name].value]));localStorage.setItem(draftKey,JSON.stringify(data));status.textContent='Draft saved in this browser. Your details have not been sent.';}catch{status.textContent='This browser cannot save a draft. You can still prepare and download your project brief.';}});
-  document.querySelector('#clear-draft').addEventListener('click',()=>{try{localStorage.removeItem(draftKey);status.textContent='Saved draft cleared from this browser.';}catch{status.textContent='Browser storage is unavailable.';}});
-  form.addEventListener('submit',event=>{event.preventDefault();if(!form.reportValidity())return;const data=Object.fromEntries(new FormData(form));brief=createBrief(data);document.querySelector('#brief-preview').textContent=brief;document.querySelector('#brief-dialog').showModal();});
+const type=document.querySelector('#estType'),quantity=document.querySelector('#estQty'),finish=document.querySelector('#estFinish');
+if(type){const currency=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'});const update=()=>{try{const value=estimateQuote(type.value,Number(quantity.value),finish.value);document.querySelector('#estimate-unit').textContent=currency.format(value.unit);document.querySelector('#estimate-total').textContent=currency.format(value.total);}catch{document.querySelector('#estimate-unit').textContent='Select options';document.querySelector('#estimate-total').textContent='—';}};[type,quantity,finish].forEach(e=>e.addEventListener('change',update));update();document.querySelector('#use-estimate').addEventListener('click',()=>{const choices={magnetic:products[4],mailer:products[5],drawer:products[6],tube:products[7],foldable:products[37],bag:products[8],rigid:products[9]};const form=document.querySelector('#quoteForm');form.elements.product.value=choices[type.value].name;form.elements.quantity.value=Number(quantity.value)<=500?'100–500 pcs':Number(quantity.value)<=1000?'500–1,000 pcs':Number(quantity.value)<=5000?'1,000–5,000 pcs':'5,000–20,000 pcs';const note=`Planning quantity: ${quantity.value} pcs. Finish: ${finish.selectedOptions[0].text}.`;
+form.elements.message.value=note+(form.elements.message.value?'\n'+form.elements.message.value:'');document.querySelector('.estimate-status').textContent='Box type, quantity and finishing copied to your project request.';form.elements.name.focus();});}
+
+const form=document.querySelector('#quoteForm');
+if(form){const status=form.querySelector('.form-status'),file=form.elements.attachment,label=document.querySelector('#fileLabel'),drop=document.querySelector('#fileDropZone');const draftKey='forme-packaging-inquiry';let brief='';const fields=['name','company','email','phone','product','quantity','message'];
+  try{const saved=JSON.parse(localStorage.getItem(draftKey)||'null');if(saved&&typeof saved==='object'){for(const name of fields)if(typeof saved[name]==='string')form.elements[name].value=saved[name];status.textContent='Your saved draft has been restored on this device.';}}catch{}
+  const query=new URLSearchParams(location.search).get('product');const current=products.find(p=>p.id===query)||products.find(p=>location.pathname.includes('/products/'+p.slug+'/'));if(current)form.elements.product.value=current.name;
+  function fileLabel(){const selected=file.files[0];file.setCustomValidity('');if(selected&&selected.size>10*1024*1024){file.setCustomValidity('Choose a file smaller than 10 MB.');label.textContent='The selected file is larger than 10 MB.';}else label.textContent=selected?`${selected.name} · ${(selected.size/1024).toFixed(0)} KB · Not uploaded`:'No file selected';}
+  file.addEventListener('change',fileLabel);drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag-over');});drop.addEventListener('dragleave',()=>drop.classList.remove('drag-over'));drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag-over');if(e.dataTransfer.files.length){file.files=e.dataTransfer.files;fileLabel();}});
+  form.querySelector('[data-save-draft]').addEventListener('click',()=>{try{localStorage.setItem(draftKey,JSON.stringify(Object.fromEntries(fields.map(name=>[name,form.elements[name].value]))));status.textContent='Draft saved in this browser. No information or file has been sent.';}catch{status.textContent='Browser storage is unavailable. You can still prepare and download your brief.';}});
+  form.querySelector('[data-clear-draft]').addEventListener('click',()=>{try{localStorage.removeItem(draftKey);status.textContent='Saved draft cleared from this browser.';}catch{status.textContent='Browser storage is unavailable.';}});
+  form.addEventListener('submit',e=>{e.preventDefault();if(!form.reportValidity())return;const values=Object.fromEntries(new FormData(form));values.attachmentName=file.files[0]?.name||'';brief=createBrief(values);document.querySelector('#brief-preview').textContent=brief;document.querySelector('#brief-dialog').showModal();});
   document.querySelector('#download-brief').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([brief],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='forme-packaging-project-brief.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
-  document.querySelector('#email-brief')?.addEventListener('click',()=>{if(site.email)location.href=`mailto:${encodeURIComponent(site.email)}?subject=${encodeURIComponent('Custom packaging inquiry')}&body=${encodeURIComponent(brief)}`;});
+  document.querySelector('#email-brief')?.addEventListener('click',()=>{if(site.email)location.href=`mailto:${encodeURIComponent(site.email)}?subject=${encodeURIComponent('Custom packaging request')}&body=${encodeURIComponent(brief)}`;});
 }

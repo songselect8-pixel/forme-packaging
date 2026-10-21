@@ -1,11 +1,15 @@
-# FORME packaging website
+# Reference-structure rebuild — 2026-10-21
 
-Reference: https://luxopack.com/ (reviewed 2026-10-21). Use the familiar B2B packaging discovery and inquiry journey, with original wording, a new visual identity, and entirely original assets. Do not import the reference site's media, customer names, certifications, reviews, or numerical business claims.
+The user clarified that the reference site's navigation, module sequence, catalog depth, page layouts and content topics should be retained. The authorized changes are visual style, original product images/videos, modest copy edits and company/contact replacement. The previous editorial showroom was outside that intent and has been replaced.
 
-The user delegated visual direction: warm ivory, forest green, champagne accents, editorial serif display type, restrained sans-serif body type, large tactile product photographs. FORME is a temporary brand. English is the initial language, consistent with the supplied export website.
+Reference captured with Playwright at 1440×1000 and 390×844, including desktop/mobile navigation, homepage, first product rows, process, quote form, product detail, industry directory, catalog and the quote-page estimator. Raw HTML is retained only as local analysis material in ignored `output/reference/`; competitor media, contact destinations, trackers and structured company claims are not shipped.
 
-Deliver a static responsive website: home, filterable collections, six product detail pages, bespoke customization, about, three useful packaging guides, and contact/inquiry. All six product families use generated imagery. A silent original product lookbook film is created from those images, with real video controls. No competitor footage is used.
+The homepage keeps its original order: video hero, process/video teaser, statistics, supplier profile, price/MOQ table, category wall, 60-product showcase, finishing, comparison, unboxing, advantages, certification records, process, knowledge questions, testimonials, product questions, blog, short FAQ, inquiry, buyer resources, footer and fixed contact controls.
 
-Contact details are null in one editable configuration file. The inquiry form validates required fields and creates a downloadable local project brief; it never pretends an inquiry has been delivered. When email is configured, offer an explicit email action. No fake contact, unverified quantities, lead times, certifications, testimonials, or factory footage.
+Scope: 60 product details, 15 industry details, directory pages, cases, certifications, about, production overview, 11 blog guides, seven buyer resources, quote, privacy and support. 104 substantive pages; 14 legacy redirects.
 
-Implementation: buildless HTML/CSS/ES modules, generated static HTML for indexable pages, no production dependencies. CSS handles responsive layout and modest motion, with reduced-motion support. Native dialog, details, and form controls. Verify catalog filtering, brief creation, local links/assets, desktop/mobile layout, menu, product navigation, FAQ, inquiry export, and film playback before private deployment.
+Visual changes: warm paper/white surfaces, forest-green accents, champagne hero buttons and local Manrope type. Preserve the 68px desktop navigation, full-height homepage hero, four-column homepage product grid, three-column catalog, two-column product hero and quote/estimator page. Mobile uses the corresponding single-column layouts and original navigation hierarchy.
+
+29 generated images and one original still-based MP4 replace reference media. Company performance figures, certifications, reviews, location, contacts, MOQ and lead times require owner information. These remain explicit placeholders or project-specific fields in their existing module positions. The price estimator is an illustrative planning comparison.
+
+Frontend-only inquiry: required validation, local attachment selection, file-size check, NDA request, explicit local draft persistence and downloadable text brief. No external transmission occurs until actual contact services are configured. Accessibility includes native forms/dialogs, keyboard navigation, accordion states, reduced motion and video controls.
