@@ -16,7 +16,7 @@ export function createBrief(fields) {
 }
 
 export function estimateQuote(type,quantity,finish){
-  const bases={magnetic:3.2,mailer:1.05,drawer:2.8,tube:2.6,foldable:2.2,bag:.95,rigid:2.5};
+  const bases={magnetic:3.2,mailer:1.05,drawer:2.8,tube:2.6,foldable:2.2,bag:.95,rigid:2.5,'corrugated-cartons':1.45,'corrugated-boxes':1.1,'white-card':.55};
   const volumes={500:1,1000:.9,2000:.8,5000:.65,10000:.55};
   const finishes={standard:1,soft:1.12,foil:1.18,emboss:1.15,combined:1.4};
   if(!Object.hasOwn(bases,type)||!Object.hasOwn(volumes,quantity)||!Object.hasOwn(finishes,finish))throw new RangeError('Invalid planning selection');

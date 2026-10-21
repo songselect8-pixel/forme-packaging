@@ -1,13 +1,14 @@
-# Verification — reference rebuild, 2026-10-21
+# Verification — imagery, editorial and printed-series revision
 
-`npm run build` generated 104 substantive pages, 60 independent product details, sitemap, robots and 14 old-link redirects.
+Date: 21 October 2026.
 
-`npm test`: four passing checks cover product route/category integrity, planning price calculation and invalid-input handling, inquiry brief content, all local page/media/anchor links, exclusion of reference contacts/trackers, and homepage section/product completeness.
+- Build: 131 substantive static pages, including 78 product details, 3 new printed-series pages, 18 industry pages and 14 articles. Fourteen legacy redirects remain.
+- Node checks: all five pass. Full HTML route/media/anchor graph resolves; product and category records are unique; new series have six distinct applications and connected home/catalog/quote entry points; estimator validation and downloaded brief behavior pass.
+- Playwright: full desktop/mobile workflow passes. Homepage has 78 loaded product photos. Filters include all three new series with six results each. Menus, image zoom, product prefill, estimator transfer, attachment selection, draft save/restore/clear, NDA, consent, download and FAQ behavior pass. Film playback is confirmed at 1280px width.
+- Responsive checks: 11 representative routes at 390px have no horizontal overflow, including all three series, a white-card detail and its guide. Desktop checked at 1440px.
+- Article image: 320×212px desktop; compact mobile height. The article layout uses a contents sidebar and a text column constrained to 750px.
+- Media integrity: 78 distinct product WebP files, all 1536×1024. All 29 shared homepage/industry image slots are refreshed from the selected outputs. The 12-second film uses the replacement product imagery.
 
-Playwright uses an isolated Chrome session, with source captures at 1440×1000 and 390×844. Browser checks cover desktop dropdowns, mobile menu, catalog filters, product navigation, image enlargement, product-to-quote prefill, calculator changes and transfer to the form, attachment selection, draft persistence/clear, NDA and consent, requirement validation, brief download, FAQ expansion and the original film's actual playback.
+Screenshots are in local `output/playwright/`; structural reference capture and image contact sheets remain local for internal review. The per-product prompt set and research sources are retained in `docs/`.
 
-The initially observed mobile hero overlay contrast issue was traced to an inherited `!important` rule. The quote-page overflow came from the inherited global `input { width:100% }` applying to checkboxes. Both were fixed at their shared selectors and checked again. A filter test race was resolved by awaiting the destination page's module/network load before clicking; the actual filter correctly returns two bag products.
-
-Browser checks passed with no application exceptions and no horizontal overflow at 390px on home, catalog, product detail, industries, quote and a guide. All homepage product images were decoded before capture. Same-viewport source/implementation comparison sheets are in `output/comparison/`.
-
-Company-specific business data remains pending. The original reference media and its analytics/form/WhatsApp destinations are excluded. The product film is an original 12-second generated-photo montage, not factory footage.
+Additional final checks: all 14 article routes passed at both 1440px and 390px (28 layouts). Homepage and all three series passed image-ratio and overflow checks at both widths (8 layouts). Series feature photos now explicitly use automatic height with a 3:2 ratio; desktop cards are 381×254px, mobile cards 341×227px. Image decoding is awaited before final visual captures. The corrected elongated-box route and image were checked directly.

@@ -8,7 +8,7 @@ async (page) => {
   await page.locator('#products img').evaluateAll(images=>images.forEach(i=>i.loading='eager'));
   await page.waitForFunction(()=>[...document.querySelectorAll('#products img')].every(i=>i.complete&&i.naturalWidth>0),null,{timeout:10000});
   await page.screenshot({path:base+'rebuilt-home-desktop.png'});
-  assert(await page.locator('[data-product-card]').count()===60,'Homepage needs 60 product cards');
+  assert(await page.locator('[data-product-card]').count()===78,'Homepage needs 78 product cards');
   const layout=await page.evaluate(()=>({nav:document.querySelector('.site-nav').getBoundingClientRect().toJSON(),hero:document.querySelector('#hero').getBoundingClientRect().toJSON(),heroText:document.querySelector('.hero-content').getBoundingClientRect().toJSON(),overflow:document.documentElement.scrollWidth>innerWidth}));
   assert(!layout.overflow,'Desktop homepage overflow');
   await page.locator('.nav-dropdown').first().hover();await page.screenshot({path:base+'rebuilt-menu-desktop.png'});
@@ -22,6 +22,7 @@ async (page) => {
   await page.locator('#navLinks > li > a').filter({hasText:'Products'}).first().click();
   await page.waitForLoadState('networkidle');
   await page.locator('[data-filter="bags"]').click();assert(await page.locator('.catalog-section [data-product-card]:visible').count()===2,'Bag filter needs exactly 2 results');
+  for(const category of ['corrugated-cartons','corrugated-boxes','white-card']){await page.locator('[data-filter="'+category+'"]').click();assert(await page.locator('.catalog-section [data-product-card]:visible').count()===6,'New series filter '+category);}
   await page.locator('[data-filter="rigid"]').click();assert((await page.locator('.catalog-section [data-product-card]:visible').count())>10,'Rigid filter failed');
   await page.locator('.catalog-section [data-product-card]:visible .product-name a').first().click();
   await page.waitForLoadState('networkidle');
@@ -41,11 +42,13 @@ async (page) => {
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.screenshot({path:base+'rebuilt-quote-page-desktop.png'});
   await page.locator('.faq-q').first().click();assert(await page.locator('.faq-q').first().getAttribute('aria-expanded')==='true','FAQ failed');
   const responsive=[];
-  for(const route of ['/','/products/','/products/custom-magnetic-rigid-gift-box-manufacturer/','/industries/','/quote/','/blog/custom-gift-boxes-cost/']){
+  for(const route of ['/','/products/','/products/custom-magnetic-rigid-gift-box-manufacturer/','/industries/','/quote/','/blog/custom-gift-boxes-cost/','/product-series/color-printed-corrugated-cartons/','/product-series/color-printed-corrugated-boxes/','/product-series/color-printed-white-card-boxes/','/blog/white-card-folding-cartons-guide/','/products/printed-skincare-white-card-carton/']){
     await page.setViewportSize({width:390,height:844});await page.goto('http://127.0.0.1:4173'+route,{waitUntil:'networkidle'});const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);assert(!overflow,'Mobile overflow '+route);responsive.push({route,overflow});
   }
   await page.setViewportSize({width:1440,height:1000});await page.goto('http://127.0.0.1:4173/products/',{waitUntil:'networkidle'});await page.screenshot({path:base+'rebuilt-catalog-desktop.png'});
   await page.goto('http://127.0.0.1:4173/products/custom-magnetic-rigid-gift-box-manufacturer/',{waitUntil:'networkidle'});await page.screenshot({path:base+'rebuilt-product-detail-desktop.png'});
   await page.goto('http://127.0.0.1:4173/industries/',{waitUntil:'networkidle'});await page.screenshot({path:base+'rebuilt-industries-desktop.png'});
+  await page.goto('http://127.0.0.1:4173/blog/white-card-folding-cartons-guide/',{waitUntil:'networkidle'});await page.screenshot({path:base+'revised-article-desktop.png'});const articleImage=await page.locator('.article-lead img').evaluate(e=>({width:e.clientWidth,height:e.clientHeight}));assert(articleImage.width<=340&&articleImage.height<=230,'Article image must remain compact');await page.setViewportSize({width:390,height:844});await page.screenshot({path:base+'revised-article-mobile.png'});await page.locator('.contents a').first().click();assert((await page.locator('.article-prose section').first().boundingBox()).y>=65,'Article TOC anchor clears nav');
+  await page.goto('http://127.0.0.1:4173/quote/?product=p73',{waitUntil:'networkidle'});assert((await page.locator('#q-product').inputValue()).includes('Skincare White Card'),'New series query prefill');await page.locator('#estType').selectOption('white-card');await page.locator('#use-estimate').click();assert((await page.locator('#q-product').inputValue()).includes('White Card'),'New estimator transfer');
   assert(errors.length===0,'Application error: '+errors.join('; '));return {browserQA:'passed',desktop:layout,responsive,applicationErrors:errors};
 }
