@@ -107,7 +107,7 @@ export const products = [
     ],
     "material": "Formed greyboard base and separate lid with decorative paper wrap",
     "finish": "Printed wrap · Optional foil · Emboss or deboss, confirmed on chosen paper",
-    "insert": "Six round EVA foam recesses sized to the vial bodies",
+    "insert": "Six product-shaped EVA foam recesses sized to the vial bodies",
     "structure": "Two-piece rigid setup box with a separate telescoping lid and base",
     "application": "Gifts & brand presentation"
   },

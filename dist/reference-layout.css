@@ -1,4 +1,4 @@
-@font-face{font-family:'Atelier Sans';src:url('/assets/sans.ttf') format('truetype');font-weight:200 800;font-display:swap}
+@font-face{font-family:'Atelier Sans';src:url('./assets/sans.ttf') format('truetype');font-weight:200 800;font-display:swap}
 
     
     #products, #unboxing, #why, #process, #faq-general, #testimonials, #faq-products, #faq, #quote, #insights,

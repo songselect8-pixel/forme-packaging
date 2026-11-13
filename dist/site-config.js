@@ -4,7 +4,7 @@ export { products };
 export const site = {
   brand: 'FORME', company: 'FORME Packaging', tagline: 'Thoughtfully made. Beautifully received.',
   email: null, phone: null, whatsapp: null, address: null,
-  origin: 'https://forme-packaging-studio.ready-vole-4943.chatgpt.site'
+  origin: 'https://songselect8-pixel.github.io/forme-packaging'
 };
 
 export function filterProducts(category = 'all') {
