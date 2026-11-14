@@ -13,3 +13,14 @@ Visual changes: warm paper/white surfaces, forest-green accents, champagne hero 
 29 generated images and one original still-based MP4 replace reference media. Company performance figures, certifications, reviews, location, contacts, MOQ and lead times require owner information. These remain explicit placeholders or project-specific fields in their existing module positions. The price estimator is an illustrative planning comparison.
 
 Frontend-only inquiry: required validation, local attachment selection, file-size check, NDA request, explicit local draft persistence and downloadable text brief. No external transmission occurs until actual contact services are configured. Accessibility includes native forms/dialogs, keyboard navigation, accordion states, reduced motion and video controls.
+
+
+## 2026-11-14 — Packaging collection hero
+
+The requested homepage poster now uses a bright editorial split composition: dark green copy on warm paper, beside a complete photograph of printed packaging samples. The photo shows a corrugated shipping carton, mailer, rigid gift box and two folding cartons without cropping or text overlays. On phones the photograph follows the copy. The rest of the page structure is retained.
+
+Research: the Google search page returned HTTP 429; use direct peer sites and the web search results instead. PakFactory's homepage was visually inspected at 1440×1000 (https://pakfactory.com/). Its clear separation of copy from an assortment of printed packaging informed the hierarchy, shorter copy and complete silhouettes. PackMojo (https://packmojo.com/) and Packhelp (https://packhelp.com/) were also read for their packaging range and product terminology; their visual layouts were not verified. The saved hero inspiration library (https://supahero.io/) was consulted as a layout reference, without copying an individual design. No competitor artwork or photos are used.
+
+One original hero was generated with the built-in GPT image tool, then edited to remove unverified certification claims from tiny sample print. Final asset: `dist/assets/hero.webp`, 1536×1024. The generation prompt, correction prompt, source paths and hashes are in `docs/product-image-prompts.json`. Previous hero versions remain recoverable through Git and the existing source references. The other 14 product image replacements remain paused.
+
+Verification: `npm run build`, `npm test`, and `tools/check-home-hero.js` in a headless Chrome browser. The browser check covers 320–2560px widths, image proportions, separate copy/image regions, overflow and both hero buttons. Screenshots are kept in ignored `output/playwright/hero-refresh-desktop.png` and `hero-refresh-mobile.png`.
